@@ -60,7 +60,7 @@ email client to your phone number using one of the following carrier addresses:
 For more information on how the above carrier email addresses work do a Google
 search for _"send text message from email to cell phone"_. Your email forwarding
 will look like this:
-- From: `postmaster@MAILGUN_SANDBOX_DOMAIN_NAME`
+- From: `postmaster@SANDBOX_DOMAIN_HERE.mailgun.org`
 - To: `YOU@EXAMPLE.com`
 - Forward to: `YOUR_PHONE_NUMBER@vzwpix.com` for Verizon
 
