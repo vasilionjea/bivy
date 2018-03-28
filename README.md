@@ -14,8 +14,20 @@ machine: `chmod u+rwx ./src/index.js`
 
 
 ## Usage
-For help, type `bivy -h` in your command line. To stop Bivy from running you
-can press the `CTRL` key plus the `C` key.
+For help, type `bivy -h` in your command line. You should see the following: 
+```
+Usage: bivy [options]
+
+Options:
+
+  -V, --version            output the version number
+  -a, --arrival [date]     (optional) Add arrival date (default: Thu Mar 29 2018)
+  -n, --nights [number]    (optional) Add number of nights (default: 1)
+  -i, --interval [string]  (optional) Add interval of minutes and/or hours to repeat search (default: 0min)
+  -h, --help               output usage information
+```
+
+To stop Bivy from running you can press `CTRL` plus `C` at anytime.
 
 The simplest way to use Bivy is by opening your command line and typing `bivy`
 without any options. Using the command this way assumes that you want your
