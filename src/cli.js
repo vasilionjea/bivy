@@ -36,7 +36,7 @@ program
   .version(VERSION)
   .option('-a, --arrival [date]', '(optional) Add arrival date', DEFAULT_ARRIVAL_DATE.toDateString())
   .option('-n, --nights [number]', '(optional) Add number of nights', DEFAULT_NIGHTS)
-  .option('-i, --interval [string]', '(optional) Add interval of minutes and/or hours to repeat search', '0min')
+  .option('-i, --interval [string]', '(optional) Add interval with minutes and/or hours to schedule a search', '0min')
   .parse(process.argv);
 
 /**

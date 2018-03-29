@@ -10,10 +10,10 @@ const TEN_MINUTES = MINUTE * 10;
  * Converts a URL's search path to an object containing the query params.
  *
  * @param {String} searchPath A URL's search path like `?foo=bar&baz=biz`
- * @param {String} [key] A param's name that's contained in the search path
- * @returns {Object|String} An object like `{foo: 'bar', baz: 'biz'}` or query param's value
+ * @param {String} [paramName] A param's name that's contained in the search path
+ * @returns {Object|String} An object like `{foo: 'bar', baz: 'biz'}` or a query param's value
  */
-function getUrlParams(searchPath, key) {
+function getUrlParams(searchPath, paramName) {
   const paramsMap = {};
   const path = decodeURIComponent(searchPath.slice(1)).trim();
 
@@ -25,7 +25,7 @@ function getUrlParams(searchPath, key) {
     }, paramsMap)
   }
 
-  return key ? paramsMap[key] : paramsMap;
+  return paramName ? paramsMap[paramName] : paramsMap;
 }
 
 /**

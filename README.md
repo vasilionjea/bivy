@@ -1,4 +1,4 @@
-# Bivy (v2.0.0)
+# Bivy (v2.0.1)
 Find a proper bivy site.
 
 ## Install
@@ -14,7 +14,7 @@ machine: `chmod u+rwx ./src/index.js`
 
 
 ## Usage
-For help, type `bivy -h` in your command line. You should see the following: 
+For help, type `bivy -h` in your command line. You should see the following:
 ```
 Usage: bivy [options]
 
@@ -23,7 +23,7 @@ Options:
   -V, --version            output the version number
   -a, --arrival [date]     (optional) Add arrival date (default: Thu Mar 29 2018)
   -n, --nights [number]    (optional) Add number of nights (default: 1)
-  -i, --interval [string]  (optional) Add interval of minutes and/or hours to repeat search (default: 0min)
+  -i, --interval [string]  (optional) Add interval with minutes and/or hours to schedule a search (default: 0min)
   -h, --help               output usage information
 ```
 
