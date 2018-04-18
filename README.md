@@ -1,4 +1,4 @@
-# Bivy (v2.0.1)
+# Bivy (v2.0.2)
 Find a proper bivy site.
 
 ## Install
