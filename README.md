@@ -13,6 +13,15 @@ permissions to Bivy's entry file using the following command on a UNIX
 machine: `chmod u+rwx ./src/index.js`
 
 
+## Upgrade
+- Re-download Bivy and replace the old bivy folder with the new one.
+- Re-install Bivy:
+  1. `cd path/to/where/you-saved/bivy`
+  2. `npm install -g`
+
+After upgrading type `bivy --version` to verify you are using the newly installed version.
+
+
 ## Usage
 For help, type `bivy -h` in your command line. You should see the following:
 ```
