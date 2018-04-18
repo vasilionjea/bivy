@@ -58,8 +58,10 @@ const steps = {
     console.log('=> Filling in dates...');
 
     await this.page.waitForSelector('#availability_filter');
-    await this.page.type('#arrivalDate', arrivalDate);
-    await this.page.type('#departureDate', departureDate);
+    await this.page.evaluate((arrivalDate, departureDate) => {
+      document.querySelector('#arrivalDate').value = arrivalDate;
+      document.querySelector('#departureDate').value = departureDate;
+    }, ...arguments);
     await this.page.click('#availability_content [title="Check Dates"]');
   },
 
