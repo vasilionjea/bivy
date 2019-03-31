@@ -1,5 +1,5 @@
 # Bivy (v2.0.2)
-Find a proper bivy site.
+Find a proper bivy site!
 
 ## Install
 - Install NodeJS: https://nodejs.org/en/
