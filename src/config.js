@@ -1,19 +1,25 @@
 'use strict';
 
+/**
+ * -------------------------------------------------------------
+ * Configuration module
+ * -------------------------------------------------------------
+ */
 module.exports = {
   BASE_URL: 'https://www.recreation.gov',
-  SEARCH_PATH: 'unifSearch.do',
+  SEARCH_PATH: 'search',
 
   // Campgrounds we care about
   CAMPGROUNDS: {
-    70925: 'UPPER PINES',
-    70928: 'LOWER PINES',
-    70927: 'NORTH PINES',
+    232447: 'UPPER PINES',
+    232450: 'LOWER PINES',
+    232449: 'NORTH PINES',
   },
 
+  AUDIO_FILE_PLAYER: '/usr/bin/afplay', // available in MacOS machines
+  AUDIO_FILE_SUCCESS: '../assets/success.wav',
+
   SELECTORS: {
-    searchInput: '#locationCriteria',
-    searchSubmit: '.searchIconBtn',
-    searchResults: '#search_results_list',
+    searchResults: '.search-results',
   },
 };

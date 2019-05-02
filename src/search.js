@@ -1,7 +1,9 @@
 'use strict';
 
+const chalk = require('chalk');
+const { exec } = require('child_process');
 const puppeteer = require('puppeteer');
-const { getUrlParams } = require('./utils');
+const querystring = require('querystring');
 const {
   BASE_URL,
   SEARCH_PATH,
@@ -10,8 +12,9 @@ const {
 } = require('./config');
 
 /**
- * Async steps to perform a search.
- * @private
+ * -------------------------------------------------------------
+ * Async steps to perform a search
+ * -------------------------------------------------------------
  */
 const steps = {
   async setup() {
@@ -20,49 +23,18 @@ const steps = {
 
     // We want a desktop viewport, which will cause the page's CSS media
     // queries to render the desktop version of the site.
-    await this.page.setViewport({ width: 1440, height: 720 });
+    await this.page.setViewport({ width: 1440, height: 760 });
 
     // When `skip` is true, the next steps get skipped.
     this.skip = false;
 
     // Client side functions exposed to the page.
     await this.page.exposeFunction('skip', () => this.skip = true);
-    await this.page.exposeFunction('getUrlParams', getUrlParams);
   },
 
-  async begin(query) {
-    await this.page.goto(`${BASE_URL}/${SEARCH_PATH}`);
-    await this.page.type(SELECTORS.searchInput, query);
-    await this.page.click(SELECTORS.searchSubmit);
-  },
-
-  async setCampingInterest() {
-    console.log('=> Setting camping interest...');
-
-    await this.page.waitForSelector('#category_filter');
-    await this.page.evaluate(() => {
-      const campingRadioButton = document.querySelector('#rb_category_camping');
-      if (!campingRadioButton) {
-        skip();
-      } else {
-        campingRadioButton.click();
-      }
-    });
-  },
-
-  async fillInDates(arrivalDate, departureDate) {
-    if (this.skip) {
-      return;
-    }
-
-    console.log('=> Filling in dates...');
-
-    await this.page.waitForSelector('#availability_filter');
-    await this.page.evaluate((arrivalDate, departureDate) => {
-      document.querySelector('#arrivalDate').value = arrivalDate;
-      document.querySelector('#departureDate').value = departureDate;
-    }, ...arguments);
-    await this.page.click('#availability_content [title="Check Dates"]');
+  async begin({ query, arrivalDate, departureDate }) {
+    console.log(chalk.cyan(`=> Starting search for your dates: ${arrivalDate} - ${departureDate}`));
+    await this.page.goto(`${BASE_URL}/${SEARCH_PATH}?q=${querystring.escape(query)}&sort=available&checkin=${arrivalDate}&checkout=${departureDate}`);
   },
 
   async findBookableCampground() {
@@ -70,18 +42,17 @@ const steps = {
       return;
     }
 
-    console.log('=> Searching bookable campground...');
+    console.log(chalk.cyan('=> Searching bookable campground.'));
 
     await this.page.waitForSelector(SELECTORS.searchResults);
-    await this.page.waitFor(3000); // won't work without a wait here
+    await this.page.waitFor(5000); // won't work without a wait here
     await this.page.evaluate(async (CAMPGROUNDS) => {
-      const availableLinks = [...document.querySelectorAll('.book_now')];
+      const availableLinks = [...document.querySelectorAll('.rec-button-primary')];
       let foundCount = 0;
 
-      // Check if any of the "Book Now" links are from
-      // campgrounds we're interested in.
+      // Check if any of the "View Details" links are from campgrounds we're interested in.
       for (const link of availableLinks) {
-        const id = await getUrlParams(link.search, 'parkId');
+        const id = link.href.replace(/\D/g, ''); // extract campground ID
 
         if (CAMPGROUNDS[id]) {
           foundCount += 1;
@@ -101,12 +72,29 @@ const steps = {
       return;
     }
 
-    console.log('=> Searching available sites...');
+    console.log(chalk.cyan('=> Searching available sites.'));
 
-    await this.page.waitForSelector('#shoppingitems');
+    await this.page.waitForSelector('.availability-component');
+    await this.page.click('.availability-component .rec-button-primary-large');
+    await this.page.waitFor(5000);
+
     return await this.page.evaluate(() => {
-      const sites = [...document.querySelectorAll('#shoppingitems tbody .book.now')];
-      return sites.map(bookLink => bookLink.href);
+      const sites = [...document.querySelectorAll('.campsite-search-left-rail-results .rec-flex-card-wrap')];
+      const siteLinks = [];
+
+      for (const site of sites) {
+        const bookNowButton = site.querySelector('.rec-button-primary');
+
+        if (bookNowButton) {
+          const siteLink = site.querySelector('a[aria-label^="Site:"]');
+
+          if (siteLink) {
+            siteLinks.push(siteLink.href);
+          }
+        }
+      }
+
+      return siteLinks;
     });
   },
 
@@ -114,27 +102,29 @@ const steps = {
     await this.page.close();
     await this.browser.close();
 
+    const noResultsMessage = chalk.red('No availability.');
+    const resultsMessage = chalk.greenBright(`Bivy found ${result.length} campsites! ✨`);
+
     if (!result || !result.length) {
-      console.log('No availability.\n');
+      console.log(`${noResultsMessage}\n`);
     } else {
-      console.log(`\nFound ${result.length} sites!`);
+      console.log(`\n${resultsMessage}`);
       console.log(result);
       process.emit('sites:found', result);
     }
   }
 };
 
+
 /**
- * Search module.
- * @public
+ * -------------------------------------------------------------
+ * The search module
+ * -------------------------------------------------------------
  */
 module.exports = {
-  async perform({ query, arrivalDate, departureDate }) {
-    console.log(`=> Starting search for your dates... ${arrivalDate} - ${departureDate}`);
+  async perform(params) {
     await steps.setup();
-    await steps.begin(query);
-    await steps.setCampingInterest();
-    await steps.fillInDates(arrivalDate, departureDate);
+    await steps.begin(params);
     await steps.findBookableCampground();
     await steps.done(await steps.findAvailableSites());
   }

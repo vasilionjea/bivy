@@ -1,9 +1,9 @@
-# Bivy (v2.0.2)
-Find a proper bivy site!
+# Bivy (v3.0.0)
+Find a proper bivy site.
 
 ## Install
 - Install NodeJS: https://nodejs.org/en/
-- Download Bivy and move it under a memorable directory.
+- Download Bivy.
 - Install Bivy:
   1. `cd path/to/where/you-saved/bivy`
   2. `npm install -g`
@@ -14,7 +14,7 @@ machine: `chmod u+rwx ./src/index.js`
 
 
 ## Upgrade
-- Re-download Bivy and replace the old bivy folder with the new one.
+- Re-download Bivy.
 - Re-install Bivy:
   1. `cd path/to/where/you-saved/bivy`
   2. `npm install -g`
@@ -30,7 +30,7 @@ Usage: bivy [options]
 Options:
 
   -V, --version            output the version number
-  -a, --arrival [date]     (optional) Add arrival date (default: Thu Mar 29 2018)
+  -a, --arrival [string]   (optional) Add arrival date (default: 11/18/2018)
   -n, --nights [number]    (optional) Add number of nights (default: 1)
   -i, --interval [string]  (optional) Add interval with minutes and/or hours to schedule a search (default: 0min)
   -h, --help               output usage information
@@ -54,9 +54,9 @@ You could specify hours, minutes, or both. For example, to run the search every
 
 #### --arrival and --nights options
 The `--arrival` and `--nights` options allow you to construct the dates you are
-interested in. For example: `bivy --arrival="Sat Mar 31 2018" --nights=2`. These
+interested in. For example: `bivy --arrival="11/18/2018" --nights=2`. These
 options can of course be used in combination with the `--interval` option like
-this: `bivy --arrival="Sat Mar 31 2018" --nights=2 --interval="30min"`
+this: `bivy --arrival="11/18/2018" --nights=2 --interval="30min"`
 
 **Note:** The order of the options does **not** matter.
 
@@ -70,7 +70,7 @@ to 10,000 emails per month for free - more at https://www.mailgun.com/.
 configure Bivy to send you emails.
 
 
-## Sending text message
+## Sending text messages
 Bivy does **not** send MMS messages, but you can set up email forwarding from your
 email client to your phone number using one of the following carrier addresses:
 - `YOUR_PHONE_NUMBER@vzwpix.com` for Verizon
@@ -78,12 +78,18 @@ email client to your phone number using one of the following carrier addresses:
 - `YOUR_PHONE_NUMBER@tmomail.net` for T-Mobile
 - `YOUR_PHONE_NUMBER@pm.sprint.com` for Sprint
 
-For more information on how the above carrier email addresses work do a Google
+For more information on how the above carrier email addresses work do a Web
 search for _"send text message from email to cell phone"_. Your email forwarding
 will look like this:
 - From: `postmaster@SANDBOX_DOMAIN_HERE.mailgun.org`
 - To: `YOU@EXAMPLE.com`
 - Forward to: `YOUR_PHONE_NUMBER@vzwpix.com` for Verizon
+
+
+## Playing sound notification
+To play a "success" sound notification on your MacOS you should place an audio
+file under the `assets/` directory, and also assign the name of your audio file
+to the `AUDIO_FILE_SUCCESS` setting inside the _config.js_ file.
 
 
 ## Compatibility
@@ -97,3 +103,23 @@ Bivy was tested using the following:
 - Puppeteer <https://www.npmjs.com/package/puppeteer>
 - Commander <https://www.npmjs.com/package/commander>
 - Mailgun <https://www.mailgun.com/> and MailgunJS <https://www.npmjs.com/package/mailgun-js>
+- Chalk <https://www.npmjs.com/package/chalk>
+
+
+## Contributing
+- Clone the Git repo locally.
+- Instead of installing Bivy globally, execute the main file directly
+  `./src/index.js` from the command line.
+- Make a pull request for the feature or bug fix.
+
+
+## TODO
+- Mailgun settings shouldn't be hardcoded inside _mailgun.js_. Add ability to
+  read settings from a user config file that's not checked in to the repository,
+  and/or from shell variables.
+- Setup a simple [ExpressJS](https://expressjs.com/) app that responds with static  
+  copies of the HTML pages that Bivy crawls. This will help with testing Bivy features
+  locally without having to depend on the actual website that it crawls.
+- Deploy Bivy in the cloud.
+- Add a `--weather` option that reports the weather. The weather report should be
+  visible inside the sent email when Bivy finds a campsite and printed in STDOUT.

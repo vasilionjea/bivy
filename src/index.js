@@ -3,12 +3,13 @@
 
 const cli = require('./cli');
 const search = require('./search');
-const { scheduleTask } = require('./utils');
-const { sendEmail, getHtml } = require('./mailgun');
+const { scheduleTask, playSuccessAudio } = require('./utils');
+const { getHtml, sendEmail } = require('./mailgun');
 
 /**
- * Entry point
- * @module Main
+ * -------------------------------------------------------------
+ * Main module
+ * -------------------------------------------------------------
  */
 (async function main() {
   const TIMEOUT = cli.interval.hours + cli.interval.minutes;
@@ -18,11 +19,10 @@ const { sendEmail, getHtml } = require('./mailgun');
     try {
       await search.perform({
         query: 'yosemite valley, ca',
-        arrivalDate: cli.dates.arrival,
-        departureDate: cli.dates.departure,
+        arrivalDate: cli.arrival,
+        departureDate: cli.departure,
       });
     } catch (err) {
-      this.stop();
       console.log(err.message);
     }
   }, TIMEOUT);
@@ -32,7 +32,7 @@ const { sendEmail, getHtml } = require('./mailgun');
     searchTask.stop();
 
     const data = {
-      subject: `Bivy found ${urls.length} sites!`,
+      subject: `Bivy found ${urls.length} campsites! ✨`,
       html: getHtml(urls)
     };
 
@@ -45,6 +45,8 @@ const { sendEmail, getHtml } = require('./mailgun');
       }
       console.log(`\n${msg}\n`);
     });
+
+    playSuccessAudio();
   });
 
   // Off we go!

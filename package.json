@@ -1,6 +1,6 @@
 {
   "name": "bivy",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "description": "Find a proper bivy site.",
   "main": "index.js",
   "bin": {
@@ -12,9 +12,9 @@
   "author": "Billy Onjea",
   "license": "MIT",
   "dependencies": {
+    "chalk": "^2.4.1",
     "commander": "2.15.1",
-    "mailgun-js": "^0.16.0",
-    "npm": "^5.8.0",
-    "puppeteer": "1.2.0"
+    "mailgun-js": "^0.22.0",
+    "puppeteer": "^1.15.0"
   }
 }

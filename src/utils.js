@@ -1,32 +1,16 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
+const chalk = require('chalk');
+const { exec } = require('child_process');
+const { AUDIO_FILE_PLAYER, AUDIO_FILE_SUCCESS } = require('./config');
+
 const MINUTE = 60000;
 const MINUTE_REGEX = /\d(min)/;
 const HOUR = MINUTE * 60;
 const HOUR_REGEX = /\d(hr)/;
 const TEN_MINUTES = MINUTE * 10;
-
-/**
- * Converts a URL's search path to an object containing the query params.
- *
- * @param {String} searchPath A URL's search path like `?foo=bar&baz=biz`
- * @param {String} [paramName] A param's name that's contained in the search path
- * @returns {Object|String} An object like `{foo: 'bar', baz: 'biz'}` or a query param's value
- */
-function getUrlParams(searchPath, paramName) {
-  const paramsMap = {};
-  const path = decodeURIComponent(searchPath.slice(1)).trim();
-
-  if (path) {
-    path.split('&').reduce((paramsMap, pair) => {
-      var [key, val] = pair.split('=');
-      paramsMap[key] = val;
-      return paramsMap;
-    }, paramsMap)
-  }
-
-  return paramName ? paramsMap[paramName] : paramsMap;
-}
 
 /**
  * @param {Number} minutes An integer representing minutes
@@ -70,6 +54,48 @@ function parseInterval(pattern = '') {
 }
 
 /**
+ * Formats date into the correct string format.
+ * @param {Date}
+ */
+function formatDate(date) {
+  const month = date.getMonth() + 1;
+  const monthDay = date.getDate();
+  const year = date.getFullYear();
+
+  return `${month}/${monthDay}/${year}`;
+}
+
+/**
+ * The park's website disallows booking sites before two days ahead, so the
+ * default arrival date is always set to two days ahead. For example, if
+ * today's date is `Jan 1st`, you can book a site starting on `Jan 3d`.
+ */
+function getDefaultArrivalDate() {
+  const today = new Date();
+  const date = new Date(today.getTime());
+  date.setDate(today.getDate() + 2);
+
+  return formatDate(date);
+}
+
+/**
+ * Returns a departure date string, which depends on the arrival date
+ * and the number of nights.
+ *
+ * @param {Date} arrivalStr  A string date like "10/13/2018"
+ * @param {Number} nights Number of nights to stay
+ * @returns {Date}
+ */
+function getDepartureDate(arrivalStr, nights) {
+  // TODO: allow passing an arrivalStr without the year, assume current year.
+  const arrival = new Date(arrivalStr);
+  const departure = new Date(arrival.getTime());
+  departure.setDate(arrival.getDate() +  Math.abs(parseInt(nights)));
+
+  return formatDate(departure);
+}
+
+/**
  * Schedules a callback function to run at a specific interval.
  *
  * @param {Function} callback The function to run
@@ -83,7 +109,9 @@ function scheduleTask(callback, timeout = 0) {
     start() {
       if (callback && !this._timer && timeout >= TEN_MINUTES) {
         const now = new Date();
-        console.log(`\n[${now.toLocaleDateString()} ${now.toLocaleTimeString()}] Scheduling task...`);
+
+        const startMessage = chalk.black(`[${now.toLocaleDateString()} ${now.toLocaleTimeString()}] Scheduling task.`);
+        console.log(`${chalk.bgCyanBright(startMessage)}`);
 
         this._timer = setInterval(callback.bind(this), timeout);
       }
@@ -98,7 +126,9 @@ function scheduleTask(callback, timeout = 0) {
     stop() {
       if (this._timer) {
         const now = new Date();
-        console.log(`\n[${now.toLocaleDateString()} ${now.toLocaleTimeString()}] Stopping task...`);
+
+        const stopMessage = chalk.cyan(`[${now.toLocaleDateString()} ${now.toLocaleTimeString()}] Stopping task.`);
+        console.log(`\n${stopMessage}`);
 
         clearInterval(this._timer);
         this._timer = null;
@@ -112,13 +142,32 @@ function scheduleTask(callback, timeout = 0) {
 }
 
 /**
- * Various shared utilities
- * @public
+ * Plays audio file using system's player (afplay for MacOS)
+ */
+function playSuccessAudio() {
+  const file = path.resolve(__dirname, AUDIO_FILE_SUCCESS);
+
+  // Check if the file exists
+  fs.access(file, fs.constants.F_OK, (err) => {
+    if (!err) {
+      exec(`${AUDIO_FILE_PLAYER} ${file}`);
+    }
+  });
+}
+
+
+/**
+ * -------------------------------------------------------------
+ * The utils module
+ * -------------------------------------------------------------
  */
 module.exports = {
-  getUrlParams,
   minutesToMilliseconds,
   hoursToMilliseconds,
   parseInterval,
+  formatDate,
+  getDefaultArrivalDate,
+  getDepartureDate,
   scheduleTask,
+  playSuccessAudio
 };
