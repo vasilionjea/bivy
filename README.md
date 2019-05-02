@@ -1,6 +1,20 @@
 # Bivy (v3.0.0)
 Find a proper bivy site.
 
+- [Install](#install)
+- [Upgrade](#upgrade)
+- [Usage](#usage)
+    + [--interval option](#--interval-option)
+    + [--arrival and --nights options](#--arrival-and---nights-options)
+- [Sending email](#sending-email)
+- [Sending text messages](#sending-text-messages)
+- [Playing sound notification](#playing-sound-notification)
+- [Compatibility](#compatibility)
+- [Dependencies](#dependencies)
+- [Contributing](#contributing)
+- [TODO](#todo)
+
+
 ## Install
 - Install NodeJS: https://nodejs.org/en/
 - Download Bivy.
