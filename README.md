@@ -129,11 +129,10 @@ Bivy was tested using the following:
 
 ## TODO
 - Mailgun settings shouldn't be hardcoded inside _mailgun.js_. Add ability to
-  read settings from a user config file that's not checked in to the repository,
-  and/or from shell variables.
+  read settings from [environment variables](https://github.com/dwyl/learn-environment-variables#3-use-a-env-file-locally-which-you-can-gitignore) that are **not** checked in to the Github repository.
 - Setup a simple [ExpressJS](https://expressjs.com/) app that responds with static  
   copies of the HTML pages that Bivy crawls. This will help with testing Bivy features
   locally without having to depend on the actual website that it crawls.
 - Deploy Bivy in the cloud.
-- Add a `--weather` option that reports the weather. The weather report should be
+- Perhaps add a `--weather` option that reports the weather. The weather report should be
   visible inside the sent email when Bivy finds a campsite and printed in STDOUT.
