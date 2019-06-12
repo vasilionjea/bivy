@@ -47,7 +47,7 @@ const steps = {
     await this.page.waitForSelector(SELECTORS.searchResults);
     await this.page.waitFor(5000); // won't work without a wait here
     await this.page.evaluate(async (CAMPGROUNDS) => {
-      const availableLinks = [...document.querySelectorAll('.rec-button-primary')];
+      const availableLinks = [...document.querySelectorAll('.sarsa-button-primary')];
       let foundCount = 0;
 
       // Check if any of the "View Details" links are from campgrounds we're interested in.
@@ -75,7 +75,7 @@ const steps = {
     console.log(chalk.cyan('=> Searching available sites.'));
 
     await this.page.waitForSelector('.availability-component');
-    await this.page.click('.availability-component .rec-button-primary-large');
+    await this.page.click('.availability-component #campground-view-by-site-list');
     await this.page.waitFor(5000);
 
     return await this.page.evaluate(() => {
@@ -83,7 +83,7 @@ const steps = {
       const siteLinks = [];
 
       for (const site of sites) {
-        const bookNowButton = site.querySelector('.rec-button-primary');
+        const bookNowButton = site.querySelector('.sarsa-button-primary');
 
         if (bookNowButton) {
           const siteLink = site.querySelector('a[aria-label^="Site:"]');
