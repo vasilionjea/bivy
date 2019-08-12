@@ -56,6 +56,7 @@ const steps = {
 
         if (CAMPGROUNDS[id]) {
           foundCount += 1;
+          link.removeAttribute('target'); // in case there is a `target="_blank"`
           link.click();
           break;
         }
