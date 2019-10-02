@@ -18,7 +18,7 @@ const { getHtml, sendEmail } = require('./mailgun');
   const searchTask = scheduleTask(async () => {
     try {
       await search.perform({
-        query: 'yosemite valley, ca',
+        query: 'yosemite valley',
         arrivalDate: cli.arrival,
         departureDate: cli.departure,
       });

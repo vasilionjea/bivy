@@ -1,4 +1,4 @@
-# Bivy (v3.0.2)
+# Bivy (v3.0.3)
 Find a proper bivy site.
 
 - [Install](#install)
