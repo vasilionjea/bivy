@@ -1,5 +1,5 @@
 # Bivy (v3.0.3)
-Find a proper bivy site.
+A Node CLI tool to find campsites in Yosemite.
 
 - [Install](#install)
 - [Upgrade](#upgrade)
