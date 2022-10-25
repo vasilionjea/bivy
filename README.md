@@ -133,6 +133,6 @@ Bivy was tested using the following:
 - Setup a simple [ExpressJS](https://expressjs.com/) app that responds with static  
   copies of the HTML pages that Bivy crawls. This will help with testing Bivy features
   locally without having to depend on the actual website that it crawls.
-- Deploy Bivy in the cloud.
+- Deploy Bivy in the cloud as a web service.
 - Perhaps add a `--weather` option that reports the weather. The weather report should be
   visible inside the sent email when Bivy finds a campsite and printed in STDOUT.
